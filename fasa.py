@@ -39,5 +39,14 @@ def compose_pkg_dict():
         pkg_dict[pkg] = get_pkg_version(pkg)
 
 
+def update_installed_pkgs():
+    compose_pkg_dict()
+
+
+def main():
+    print("Starting Fasa")
+
 get_asa_list()
-compose_pkg_dict()
+
+if __name__ == "__main__":
+    main()

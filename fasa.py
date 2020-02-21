@@ -26,7 +26,7 @@ def get_asa_list():
 	reg = re.compile('\s[\w-]*:\s')
 	data = page.text
 	pkg = reg.findall(data)
-	pkg_list = [ x.strip()[:-1] for x in pkg]
+	pkg_list = list(map(lambda x: x.strip()[:-1], pkg))
 	return pkg_list
 
 

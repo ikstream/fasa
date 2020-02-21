@@ -1,15 +1,33 @@
 #!/usr/bin/env python3
 
 from bs4 import BeautifulSoup as bs
+from pathlib import Path
 import requests
 import subprocess
+import re
+
+VERSION="0.1"
+HOME=str(Path.home())
+CONFIG_PATH=HOME + "/.config/fasa"
+
+def create_config_dir():
+    try:
+        err = subprocess.run(['mkdir', CONFIG_PATH], stdout=subpress.PIPE)
+    except:
+        print("Could not create {} directory".format(CONFIG_PATH))
+        print("{}".format(err.stdout.decode('utf-8')))
 
 def get_asa_list():
-    page = requests.get("https://lists.archlinux.org/pipermail/arch-security/2018-January/thread.html")
-    data = page.text
-    asa_data = bs(data)
-    body = asa_data.body
-    complete_asa = body.findAll('li')
+	try:
+	    page = requests.get("https://lists.archlinux.org/pipermail/arch-security/2018-January/thread.html")
+	except:
+	    print("Something went wrong receiving the arch-security list")
+	    return None
+	reg = re.compile('\s[\w-]*:\s')
+	data = page.text
+	pkg = reg.findall(data)
+	pkg_list = [ x.strip()[:-1] for x in pkg]
+	return pkg_list
 
 
 def get_installed_packages():
@@ -43,10 +61,15 @@ def update_installed_pkgs():
     compose_pkg_dict()
 
 
-def main():
-    print("Starting Fasa")
+def print_version():
+    print("Fasa version: {}".format(VERSION))
 
-get_asa_list()
+
+def main():
+    print_version()
+    print("Home:{}".format(HOME))
+    print("Config path {}".format(CONFIG_PATH))
+    get_asa_list()
 
 if __name__ == "__main__":
     main()
